@@ -1,0 +1,11 @@
+#!/bin/sh
+DIR="/home/gmoduong/Desktop/git-bare/source-deploying"
+cd $DIR || exit
+unset GIT_DIR
+
+git status
+git remote -v
+git fetch
+git reset --hard origin/master
+yarn
+yarn build
