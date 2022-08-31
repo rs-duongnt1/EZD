@@ -1,0 +1,23 @@
+#!/bin/bash
+
+DEPLOY_DIR="{{DEPLOY_DIR}}"
+BARE_DIR="{{BARE_DIR}}"
+
+while read oldrev newrev ref
+do
+    BRANCH=$(git rev-parse --symbolic --abbrev-ref $ref)
+    if [[ $BRANCH == "master" ]]; then
+	if [ -d "$DEPLOY_DIR" ]; then
+	  {{SCRIPT_PATH}} {{DEPLOY_DIR}}
+	  echo "Successfully"
+	else
+	  ###  Control will jump here if $DIR does NOT exists ###
+	  git clone -b master $BARE_DIR $DEPLOY_DIR
+	  # echo "Install dependencies..."
+	  # npm install $DIR
+	  echo "Nothing..."
+	fi
+    else
+        echo "Not master branch. Skipping."
+    fi
+done

@@ -1,5 +1,10 @@
 import { ChildProcessService } from './../child_process/child_process.service';
 import { Controller, Get } from '@nestjs/common';
+import { writeFileSync, readFileSync, mkdirSync } from 'fs';
+import { compile } from 'handlebars';
+import { join } from 'path';
+import { simpleGit, SimpleGit, SimpleGitOptions } from 'simple-git';
+import * as chmodr from 'chmodr';
 
 /**
  * https://devhints.io/git-log-format
@@ -8,6 +13,46 @@ import { Controller, Get } from '@nestjs/common';
 @Controller('repository')
 export class RepositoryController {
   constructor(private childProcessService: ChildProcessService) {}
+  @Get('create')
+  async createRepo() {
+    const templatePath = join(
+      __dirname,
+      '../../templates/post-receive.template',
+    );
+
+    const sourceDir = join(__dirname, '../../sources/xxxxxx.git');
+
+    mkdirSync(sourceDir, {
+      recursive: true,
+    });
+
+    const options: Partial<SimpleGitOptions> = {
+      baseDir: sourceDir,
+      binary: 'git',
+      maxConcurrentProcesses: 6,
+      trimmed: false,
+    };
+    const git: SimpleGit = simpleGit(options);
+
+    await git.init(true);
+
+    // const content = readFileSync();
+    const content = readFileSync(templatePath, 'utf-8');
+
+    const template = compile(content);
+
+    const contents = template({
+      DEPLOY_DIR: '/home/gmoduong/Desktop/git-bare/source-deploying',
+      BARE_DIR: sourceDir,
+      SCRIPT_PATH: '/home/gmoduong/Desktop/myproject/git-bare/scripts/pre-push',
+    });
+
+    writeFileSync(join(sourceDir, 'hooks', 'post-receive'), contents);
+
+    chmodr(join(sourceDir, 'hooks', 'post-receive'), 0o755, (err) => {});
+
+    return contents;
+  }
   @Get('branch')
   async getBranch() {
     const cwd = '/home/gmoduong/Desktop/git-bare/bare-source';
