@@ -1,0 +1,12 @@
+#!/bin/sh
+cd "$1" || exit
+unset GIT_DIR
+
+# write log to file, ex: yarn > log.txt 2>&1 or yarn  2>&1 | tee log.txt
+
+git status
+git remote -v
+# git fetch
+# git reset --hard origin/master
+yarn
+yarn build

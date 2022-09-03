@@ -1,0 +1,14 @@
+#!/bin/bash
+
+repositoryPath="{{repositoryPath}}"
+bareRepositoryPath="{{bareRepositoryPath}}"
+
+while read oldrev newrev ref
+do
+    BRANCH=$(git rev-parse --symbolic --abbrev-ref $ref)
+    if [[ $BRANCH == "master" ]]; then
+		{{prePushScript}} {{repositoryPath}}
+    else
+        echo "Not master branch. Skipping."
+    fi
+done
