@@ -4,7 +4,7 @@
 
 # Specify node version and choose image
 # also name our image as development (can be anything)
-FROM node:16 AS development
+FROM node:14 AS development
 
 # Specify our working directory, this is in our container/in our image
 WORKDIR /var/src/gateway
@@ -12,6 +12,11 @@ WORKDIR /var/src/gateway
 # Copy the package.jsons from host to container
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
+
+RUN npm config set -g production false
+
+RUN git config --global user.email "duongnt1@runsystem.net"
+RUN git config --global user.name "duongnt1"
 
 # Here we install all the deps
 RUN npm install
@@ -26,7 +31,7 @@ RUN npm run build
 ## PRODUCTION ##
 ################
 # Build another image named production
-FROM node:16 AS production
+FROM node:14 AS production
 
 # Set node env to prod
 ARG NODE_ENV=production
@@ -37,8 +42,6 @@ WORKDIR /var/src/gateway
 
 # Copy all from development stage
 COPY --from=development /var/src/gateway/ .
-
-EXPOSE 8080
 
 # Run app
 CMD [ "node", "dist/main" ]

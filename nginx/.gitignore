@@ -1,0 +1,10 @@
+# build dist
+dist
+
+# lock
+package-lock.json
+yarn.lock
+
+node_modules
+
+config/sites-enabled
