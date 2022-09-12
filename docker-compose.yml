@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  gateway:
+    build:
+      dockerfile: Dockerfile
+      context: gateway
+      target: development
+    volumes:
+      - ./gateway:/var/src/gateway
+      - /var/src/gateway/node_modules
+    command: npm run start:debug
+    ports:
+      - 8080:3000
+  deployment:
+    build:
+      dockerfile: Dockerfile
+      context: deployment
+      target: development
+    volumes:
+      - ./deployment:/var/src/deployment
+      - /var/src/deployment/node_modules
+    command: npm run start:debug
+    ports:
+      - 8081:3000
+  project:
+    build:
+      dockerfile: Dockerfile
+      context: project
+      target: development
+    volumes:
+      - ./project:/var/src/project
+      - /var/src/project/node_modules
+    command: npm run start:debug
+    ports:
+      - 8082:3000
