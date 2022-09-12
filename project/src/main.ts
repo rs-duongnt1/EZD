@@ -1,8 +1,17 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { ProjectModule } from './project.module';
+import { Transport, TcpOptions } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  console.log(process.env.MONGO_DSN);
+  const app = await NestFactory.createMicroservice(ProjectModule, {
+    transport: Transport.TCP,
+    options: {
+      host: '0.0.0.0',
+      port: Number(process.env.PROJECT_SERVICE_PORT),
+    },
+  } as TcpOptions);
+
+  await app.listen();
 }
 bootstrap();

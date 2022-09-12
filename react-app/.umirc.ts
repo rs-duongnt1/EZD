@@ -1,33 +1,61 @@
-import { defineConfig } from 'umi';
-
-export default defineConfig({
-  nodeModulesTransform: {
-    type: 'none',
+export default {
+  // routes: [{ path: '/', component: 'index' }],
+  plugins: ['@umijs/plugins/dist/dva'],
+  dva: {
+    immer: {
+      enableES5: true,
+      enableAllPlugins: true,
+    },
+  },
+  define: {
+    API_ENDPOINT: process.env.API_ENDPOINT,
   },
   routes: [
     {
       path: '/',
-      component: '@/layouts/index',
+      component: '@/layouts/app',
       routes: [
-        { path: '/', component: '@/pages/index' },
         {
-          path: 'dashboard',
-          component: '@/pages/dashboard',
+          path: '/',
+          component: '@/pages/index',
         },
         {
           path: 'new',
-          component: '@/pages/new',
+          component: '@/pages/new/index',
         },
         {
-          path: ':team/:project_name',
-          component: '@/pages/projects/detail',
+          path: '/:team/',
+          component: '@/layouts/team',
+          routes: [
+            {
+              path: '/:team/',
+              component: '@/pages/$team/index',
+            },
+            {
+              path: '/:team/settings',
+              component: '@/pages/$team/settings',
+            },
+          ],
         },
         {
-          path: 'settings',
-          component: '@/pages/settings/index',
+          path: '/:team/:project',
+          component: '@/layouts/project',
+          routes: [
+            {
+              path: '/:team/:project/',
+              component: '@/pages/$team/$project/index',
+            },
+            {
+              path: '/:team/:project/deployments',
+              component: '@/pages/$team/$project/deployments/index',
+            },
+            {
+              path: '/:team/:project/settings',
+              component: '@/pages/$team/$project/settings/index',
+            },
+          ],
         },
       ],
     },
   ],
-  fastRefresh: {},
-});
+};

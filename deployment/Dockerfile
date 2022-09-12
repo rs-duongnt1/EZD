@@ -4,14 +4,28 @@
 
 # Specify node version and choose image
 # also name our image as development (can be anything)
-FROM node:16 AS development
+FROM node:14 AS development
 
 # Specify our working directory, this is in our container/in our image
 WORKDIR /var/src/deployment
 
+# Git bare repositories
+RUN mkdir -p /data/bare_repositories \
+  && chown -R node:node /data/bare_repositories
+VOLUME /data/bare_repositories
+
+RUN mkdir -p /var/www/source-deployments \
+  && chown -R node:node /var/www/source-deployments
+VOLUME /var/www/source-deployments
+
 # Copy the package.jsons from host to container
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
+
+RUN npm config set -g production false
+
+RUN git config --global user.email "duongnt1@runsystem.net"
+RUN git config --global user.name "duongnt1"
 
 # Here we install all the deps
 RUN npm install
@@ -37,8 +51,6 @@ WORKDIR /var/src/deployment
 
 # Copy all from development stage
 COPY --from=development /var/src/deployment/ .
-
-EXPOSE 8080
 
 # Run app
 CMD [ "node", "dist/main" ]

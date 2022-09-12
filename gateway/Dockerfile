@@ -38,8 +38,6 @@ WORKDIR /var/src/gateway
 # Copy all from development stage
 COPY --from=development /var/src/gateway/ .
 
-EXPOSE 8080
-
 # Run app
 CMD [ "node", "dist/main" ]
 

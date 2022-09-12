@@ -38,8 +38,6 @@ WORKDIR /var/src/project
 # Copy all from development stage
 COPY --from=development /var/src/project/ .
 
-EXPOSE 8080
-
 # Run app
 CMD [ "node", "dist/main" ]
 

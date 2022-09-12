@@ -1,17 +1,23 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
+declare const API_ENDPOINT: string;
+
+console.log(API_ENDPOINT);
 
 const axiosRequest = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: API_ENDPOINT,
 });
 
 axiosRequest.interceptors.response.use(
   (response) => {
-    return response.data;
+    if (!response.data.data) {
+      Swal.fire(response.data.status.toString(), response.data?.message, 'error');
+      return null;
+    }
+    return response.data.data;
   },
   (err) => {
     if (err.response.status >= 500) {
-      Swal.fire(err.code, err.response?.data?.message, 'error');
       return Promise.reject(null);
     } else {
       return Promise.reject(err.response.data.message);
