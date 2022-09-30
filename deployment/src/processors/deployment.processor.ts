@@ -1,3 +1,4 @@
+import { CaddyService } from './../services/caddy.service';
 import {
   writeFileSync,
   createWriteStream,
@@ -21,10 +22,12 @@ const execAsync = promisify(exec);
 
 @Processor({
   name: 'deployment',
-  scope: Scope.DEFAULT,
 })
 export class DeploymentProcessor {
-  constructor(private deploymentService: DeploymentService) {}
+  constructor(
+    private deploymentService: DeploymentService,
+    private caddyService: CaddyService,
+  ) {}
   @Process({
     name: 'building',
     concurrency: 3,
@@ -43,11 +46,9 @@ export class DeploymentProcessor {
     }
     Logger.log('Create bare repo successfully', 'Building');
     try {
-      const buildPath = `/var/www/builds`;
+      const buildPath = join('/var/www/builds', team.slug, project.slug);
 
-      const domainName = `${randomBytes(10).toString('hex')}-${project.slug}-${
-        team.slug
-      }.${process.env.APP_ROOT_DOMAIN}`;
+      await execAsync(`mkdir -p ${buildPath}`);
 
       await this.deploymentService.updateById(deployment._id, {
         state: 'BUILDING',
@@ -56,30 +57,37 @@ export class DeploymentProcessor {
 
       Logger.log(`Cloning project...`);
 
-      await execAsync(`git clone ${gitBarePath} ${domainName}`, {
+      await execAsync(`git clone ${gitBarePath} ${deployment._id}`, {
         cwd: buildPath,
       });
 
       await execAsync(`npm config set -g production false`, {
-        cwd: join(buildPath, domainName),
+        cwd: join(buildPath, deployment._id),
       });
 
-      await this._installDependencies(join(buildPath, domainName));
-      await this._building(join(buildPath, domainName));
+      await this._installDependencies(join(buildPath, deployment._id));
+      await this._building(join(buildPath, deployment._id));
       await this.deploymentService.updateById(deployment._id, {
         state: 'READY',
         readyAt: new Date().getTime(),
       } as IDeployment);
-      await this._assignDomain(deployment, domainName);
+
+      const domain = `${deployment._id}-${team.slug}-${project.slug}.rsdn.site`;
+
+      await this._assignDomain(deployment, domain);
 
       Logger.log('cleaning...');
 
       const output = await execAsync('ls -al');
-      console.log(output);
 
       await execAsync(`ls --hide=dist | xargs -d '\n' rm -rf`, {
-        cwd: join(buildPath, domainName),
+        cwd: join(buildPath, deployment._id),
       });
+
+      await this.caddyService.addConfig(
+        domain,
+        join(buildPath, deployment._id, 'dist'),
+      );
 
       Logger.log('Build ended');
     } catch (err) {
@@ -88,6 +96,11 @@ export class DeploymentProcessor {
       } as IDeployment);
       console.error(err);
     }
+  }
+
+  @OnQueueCompleted()
+  async onJobCompleted(job: Job, result: any) {
+    await job.remove();
   }
 
   private async _assignDomain(deployment: IDeployment, domain: string) {

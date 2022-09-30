@@ -9,14 +9,11 @@ import { ApiTags } from '@nestjs/swagger';
 export class TeamController {
   constructor(
     @Inject('TEAM_SERVICE') private readonly teamServiceClient: ClientProxy,
-    @Inject('NGINX_SERVICE') private readonly nginxServiceClient: ClientProxy,
+    @Inject('CADDY_SERVICE') private readonly nginxServiceClient: ClientProxy,
   ) {}
 
   @Get()
   async findAll(@Query() query: ITeamSearchQuery) {
-    // const xx = await firstValueFrom(
-    // return this.nginxServiceClient.send('nginx_new_config', {});
-
     return await this.teamServiceClient.send('team_search', query);
   }
 

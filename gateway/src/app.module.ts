@@ -47,12 +47,12 @@ import { AppService } from './app.service';
       },
     },
     {
-      provide: 'NGINX_SERVICE',
+      provide: 'CADDY_SERVICE',
       useFactory: () => {
         return ClientProxyFactory.create({
           options: {
-            host: process.env.NGINX_SERVICE_HOST,
-            port: Number(process.env.NGINX_SERVICE_PORT),
+            host: process.env.CADDY_SERVICE_HOST,
+            port: Number(process.env.CADDY_SERVICE_PORT),
           },
           transport: Transport.TCP,
         });

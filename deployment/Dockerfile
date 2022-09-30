@@ -40,7 +40,7 @@ RUN npm run build
 ## PRODUCTION ##
 ################
 # Build another image named production
-FROM node:16 AS production
+FROM node:14 AS production
 
 # Set node env to prod
 ARG NODE_ENV=production
