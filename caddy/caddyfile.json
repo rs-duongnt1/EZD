@@ -11,14 +11,19 @@
             {
               "handle": [
                 {
-                  "handler": "reverse_proxy",
-                  "transport": {
-                    "protocol": "http",
-                    "read_buffer_size": 4096
-                  },
-                  "upstreams": [
+                  "handler": "subroute",
+                  "routes": [
                     {
-                      "dial": "application"
+                      "handle": [
+                        {
+                          "handler": "vars",
+                          "root": "/var/src/caddy"
+                        },
+                        {
+                          "handler": "file_server",
+                          "hide": ["./Caddyfile"]
+                        }
+                      ]
                     }
                   ]
                 }

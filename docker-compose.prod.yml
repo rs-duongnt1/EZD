@@ -5,6 +5,8 @@ volumes:
     external: true
   builds:
     external: true
+  app:
+    external: true
 
 services:
   app:
@@ -15,6 +17,7 @@ services:
     volumes:
       - ./react-app:/var/src/react-app
       - /var/src/react-app/node_modules
+      - app:/var/src/react-app/dist
     restart: always
     hostname: application
     env_file:
@@ -85,10 +88,12 @@ services:
     hostname: caddy_server
     ports:
       - 80:80
+      - 443:443
     volumes:
       - ./caddy:/var/src/caddy
       - /var/src/caddy/node_modules
       - builds:/var/www/builds
+      - app:/var/src/app
     networks:
       - backend
       - frontend
