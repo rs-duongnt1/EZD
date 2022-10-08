@@ -11,7 +11,14 @@ export const organizationApi = createApi({
         url: 'orgs',
       }),
     }),
+    getListRepos: builder.mutation({
+      query: (org) => ({
+        method: 'GET',
+        url: `orgs/${org}/repos`,
+      }),
+    }),
   }),
 });
 
-export const { useGetListOrganizationsQuery } = organizationApi;
+export const { useGetListOrganizationsQuery, useGetListReposMutation } =
+  organizationApi;

@@ -4,6 +4,7 @@ import DropdownMenu, {
   DropdownItemGroup,
 } from '@atlaskit/dropdown-menu';
 import Avatar from '@atlaskit/avatar';
+import { useGetUserInfoQuery } from '../services/user';
 
 const HeaderRoot = styled.div({
   height: '54px',
@@ -15,16 +16,25 @@ const HeaderRoot = styled.div({
   //   boxShadow: '0 2px 10px rgb(0 0 0 / 25%)',
 });
 
+const Username = styled.span({
+  fontSize: '14px',
+  marginRight: '10px',
+});
+
 export default function Header() {
+  const { data: user } = useGetUserInfoQuery();
+  console.log(user);
   return (
     <HeaderRoot>
+      <Username>{user?.email}</Username>
+
       <DropdownMenu
         trigger={({ triggerRef, isSelected, testId, ...providedProps }) => (
           <Avatar
             {...providedProps}
             ref={triggerRef}
-            name={'xxxx'}
-            src="https://pbs.twimg.com/profile_images/568401563538841600/2eTVtXXO_400x400.jpeg"
+            name={user?.username}
+            src={user?.avatar_url}
             size="large"
             label={'xx'}
             appearance="square"

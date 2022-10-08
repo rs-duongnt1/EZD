@@ -33,6 +33,7 @@ export class UserService {
       this.httpService.get(`${userBaseUrl}/repos`, {
         params: {
           access_token: accessToken,
+          sort: 'newest',
         },
       }),
     );

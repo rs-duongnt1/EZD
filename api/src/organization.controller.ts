@@ -14,4 +14,13 @@ export class OrganizationController {
     );
     return result.data;
   }
+
+  @Get(':org/repos')
+  async getListRepos(@Req() req: Request) {
+    const result = await this.organizationService.getListRepo(
+      req.cookies.access_token,
+      req.params.org,
+    );
+    return result.data;
+  }
 }

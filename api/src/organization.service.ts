@@ -16,4 +16,14 @@ export class OrganizationService {
       }),
     );
   }
+
+  getListRepo(access_token: string, org: string) {
+    return firstValueFrom(
+      this.httpService.get(`${orgsBaseUrl}/${org}/repos`, {
+        params: {
+          access_token,
+        },
+      }),
+    );
+  }
 }

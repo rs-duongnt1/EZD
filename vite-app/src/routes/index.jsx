@@ -28,6 +28,22 @@ const routes = () => [
           </Suspense>
         ),
       },
+      {
+        path: '/:org',
+        element: (
+          <Suspense fallback={'Loading...'}>
+            <Home />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/:org/:repo',
+        element: (
+          <Suspense fallback={'Loading...'}>
+            <Home />
+          </Suspense>
+        ),
+      },
     ],
   },
 ];

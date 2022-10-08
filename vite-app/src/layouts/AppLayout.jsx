@@ -8,12 +8,19 @@ const Container = styled.div({
   padding: '0 15px',
 });
 
+const Main = styled.div({
+  marginTop: '30px',
+  marginBottom: '60px',
+});
+
 export default function AppLayout() {
   return (
     <div>
       <Header />
       <Container>
-        <Outlet />
+        <Main>
+          <Outlet />
+        </Main>
       </Container>
     </div>
   );
