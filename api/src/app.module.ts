@@ -5,11 +5,12 @@ import { AppService } from './app.service';
 import { AuthController } from './auth.controller';
 import { OrganizationController } from './organization.controller';
 import { OrganizationService } from './organization.service';
+import { RepositoryModule } from './repository/repository.module';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [HttpModule],
+  imports: [HttpModule, RepositoryModule],
   controllers: [
     AppController,
     AuthController,
