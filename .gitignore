@@ -38,3 +38,5 @@ sources
 source-deploying
 
 db/data
+.mysql-data
+gitea

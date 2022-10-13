@@ -2,8 +2,8 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 
-const usersBaseUrl = 'https://git.rsdn.site/api/v1/users';
-const userBaseUrl = 'https://git.rsdn.site/api/v1/user';
+const usersBaseUrl = 'http://localhost:4444/api/v1/users';
+const userBaseUrl = 'http://localhost:4444/api/v1/user';
 
 @Injectable()
 export class UserService {

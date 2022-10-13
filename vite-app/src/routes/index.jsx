@@ -1,48 +1,86 @@
-import { Suspense } from 'react';
-import AppLayout from '../layouts/AppLayout';
-import Home from '../pages/Home';
-import Login from '../pages/Login';
+import { Suspense } from "react";
+import { Navigate } from "react-router-dom";
+import AppLayout from "../layouts/AppLayout";
+import Home from "../pages/Home";
+import Login from "../pages/Login";
+import Repository from "../pages/repository";
+import Deployment from "../pages/repository/deployment";
+import Overview from "../pages/repository/overview";
+import Sources from "../pages/repository/sources";
+import Lozenge from "@atlaskit/lozenge";
+import Spinner from "@atlaskit/spinner";
+import CreateOrg from "../pages/org/create";
 
 const routes = () => [
   {
-    path: '/login',
+    path: "/login",
     element: (
-      <Suspense fallback={'Loading...'}>
+      <Suspense fallback={"Loading..."}>
         <Login />
       </Suspense>
     ),
   },
   {
-    path: '/',
+    path: "/",
     element: (
-      <Suspense fallback={'Loading...'}>
+      <Suspense fallback={<Spinner size="medium" />}>
         <AppLayout />
       </Suspense>
     ),
     children: [
       {
-        path: '/',
+        path: "/",
         element: (
-          <Suspense fallback={'Loading...'}>
+          <Suspense fallback={"Loading..."}>
             <Home />
           </Suspense>
         ),
       },
       {
-        path: '/:org',
+        path: "org/create",
         element: (
-          <Suspense fallback={'Loading...'}>
-            <Home />
+          <Suspense fallback={"Loading..."}>
+            <CreateOrg />
           </Suspense>
         ),
       },
       {
-        path: '/:org/:repo',
+        path: "/:org/:repo",
         element: (
-          <Suspense fallback={'Loading...'}>
-            <Home />
+          <Suspense fallback={<Spinner size="small" />}>
+            <Repository />
           </Suspense>
         ),
+        children: [
+          {
+            path: "",
+            element: <Navigate to="overview" replace />,
+          },
+          {
+            path: "overview",
+            element: (
+              <Suspense fallback={"Loading..."}>
+                <Overview />
+              </Suspense>
+            ),
+          },
+          {
+            path: "deployments",
+            element: (
+              <Suspense fallback={"Loading..."}>
+                <Deployment />
+              </Suspense>
+            ),
+          },
+          {
+            path: "sources",
+            element: (
+              <Suspense fallback={<Spinner size="small" />}>
+                <Sources />
+              </Suspense>
+            ),
+          },
+        ],
       },
     ],
   },

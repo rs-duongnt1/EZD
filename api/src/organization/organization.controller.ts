@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
-import { UserService } from './user.service';
 import { Request, Response } from 'express';
 import { OrganizationService } from './organization.service';
 
@@ -20,6 +19,15 @@ export class OrganizationController {
     const result = await this.organizationService.getListRepo(
       req.cookies.access_token,
       req.params.org,
+    );
+    return result.data;
+  }
+
+  @Post()
+  async createOrg(@Body() body, @Req() req) {
+    const result = await this.organizationService.createOrg(
+      req.cookies.access_token,
+      body,
     );
     return result.data;
   }

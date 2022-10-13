@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 
-const orgsBaseUrl = 'https://git.rsdn.site/api/v1/orgs';
+const orgsBaseUrl = 'http://localhost:4444/api/v1/orgs';
 
 @Injectable()
 export class OrganizationService {
@@ -24,6 +24,29 @@ export class OrganizationService {
           access_token,
         },
       }),
+    );
+  }
+
+  createOrg(
+    access_token: string,
+    {
+      name,
+      visibility,
+    }: { org: string; name: string; visibility: 'public' | 'private' },
+  ) {
+    return firstValueFrom(
+      this.httpService.post(
+        `${orgsBaseUrl}`,
+        {
+          username: name,
+          visibility: visibility,
+        },
+        {
+          params: {
+            access_token,
+          },
+        },
+      ),
     );
   }
 }
