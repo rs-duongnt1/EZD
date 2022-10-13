@@ -2,15 +2,14 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 
-const usersBaseUrl = 'https://git.rsdn.site/api/v1/users';
-const userBaseUrl = 'https://git.rsdn.site/api/v1/user';
-
 @Injectable()
 export class UserService {
+  private usersBaseUrl = process.env.GITEA_API_URL + '/users';
+  private userBaseUrl = process.env.GITEA_API_URL + '/user';
   constructor(private httpService: HttpService) {}
   getUserByToken(token: string) {
     return firstValueFrom(
-      this.httpService.get(userBaseUrl, {
+      this.httpService.get(this.userBaseUrl, {
         headers: {
           authorization: 'Basic ' + token,
         },
@@ -19,8 +18,9 @@ export class UserService {
   }
 
   getUserByAccessToken(accessToken: string) {
+    console.log(this.userBaseUrl);
     return firstValueFrom(
-      this.httpService.get(`${userBaseUrl}`, {
+      this.httpService.get(`${this.userBaseUrl}`, {
         params: {
           access_token: accessToken,
         },
@@ -30,7 +30,7 @@ export class UserService {
 
   getListRepo(accessToken: string) {
     return firstValueFrom(
-      this.httpService.get(`${userBaseUrl}/repos`, {
+      this.httpService.get(`${this.userBaseUrl}/repos`, {
         params: {
           access_token: accessToken,
           sort: 'newest',
@@ -40,7 +40,7 @@ export class UserService {
   }
 
   createAccessToken(token: string, username: string, name: string) {
-    const url = `${usersBaseUrl}/${username}/tokens`;
+    const url = `${this.usersBaseUrl}/${username}/tokens`;
     return firstValueFrom(
       this.httpService.post(
         url,

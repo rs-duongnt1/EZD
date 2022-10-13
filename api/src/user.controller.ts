@@ -7,17 +7,12 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  async userInfo(@Body() body, @Req() req: Request) {
-    console.log(req.cookies);
-    const userRes = await this.userService.getUserByAccessToken(
-      req.cookies.access_token,
-    );
-
+  async userInfo(@Req() req: Request) {
     const userReposRes = await this.userService.getListRepo(
       req.cookies.access_token,
     );
     return {
-      ...userRes.data,
+      ...req['user'],
       repos: userReposRes.data,
     };
   }
