@@ -10,6 +10,7 @@ import { RepositoryModule } from './repository/repository.module';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { ConfigModule } from '@nestjs/config';
+import { DeploymentModule } from './deployment/deployment.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ConfigModule } from '@nestjs/config';
     RepositoryModule,
     OrganizationModule,
     WebhookModule,
+    DeploymentModule,
     // ConfigModule.forRoot(),
   ],
   controllers: [AppController, AuthController, UserController],

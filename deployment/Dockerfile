@@ -9,15 +9,6 @@ FROM node:14 AS development
 # Specify our working directory, this is in our container/in our image
 WORKDIR /var/src/deployment
 
-# Git bare repositories
-RUN mkdir -p /var/www/bare_repositories \
-  && chown -R node:node /var/www/bare_repositories
-VOLUME /var/www/bare_repositories
-
-RUN mkdir -p /var/www/builds \
-  && chown -R node:node /var/www/builds
-VOLUME /var/www/builds
-
 # Copy the package.jsons from host to container
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
@@ -28,7 +19,8 @@ RUN git config --global user.email "duongnt1@runsystem.net"
 RUN git config --global user.name "duongnt1"
 
 # Here we install all the deps
-RUN npm install
+
+RUN yarn
 
 # Bundle app source / copy all other files
 COPY . .

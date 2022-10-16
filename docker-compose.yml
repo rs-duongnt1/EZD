@@ -117,6 +117,23 @@ services:
       - backend
       - frontend
   
+  building:
+    build:
+      dockerfile: Dockerfile
+      context: deployment
+      target: development
+    volumes:
+      - ./deployment:/var/src/deployment
+      - /var/src/deployment/node_modules
+    command: npm run start:debug
+    restart: always
+    hostname: deployment
+    env_file:
+      - .env
+    networks:
+      - backend
+      - frontend
+  
   redis:
     image: redis:6.2-alpine
     restart: always

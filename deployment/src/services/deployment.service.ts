@@ -1,43 +1,17 @@
-import { IDeploymentCreateParams } from './../interfaces/deployment-create-params.interface';
-import { IDeployment } from './../interfaces/deployment.interface';
-import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Deployment } from '../entities/deployment.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class DeploymentService {
   constructor(
-    @InjectModel('Deployment')
-    private readonly deploymentModel: Model<IDeployment>,
+    @InjectRepository(Deployment)
+    private usersRepository: Repository<Deployment>,
   ) {}
 
-  search(params) {
-    return this.deploymentModel
-      .find({
-        projectId: params.projectId,
-      })
-      .sort({ updatedAt: -1 });
-  }
-
-  findById(id: string) {
-    return this.deploymentModel.findById(id);
-  }
-
-  create(params: IDeploymentCreateParams) {
-    const deployment = new this.deploymentModel({
-      projectId: params.projectId,
-      state: 'QUEUED',
-    });
-
-    return deployment.save();
-  }
-
-  updateById(id: string, dataUpdate: IDeployment) {
-    return this.deploymentModel.updateOne(
-      {
-        _id: id,
-      },
-      dataUpdate,
-    );
+  async createDeployment(dataInsert: Deployment): Promise<Deployment> {
+    const deployment = await this.usersRepository.save(dataInsert);
+    return deployment;
   }
 }
