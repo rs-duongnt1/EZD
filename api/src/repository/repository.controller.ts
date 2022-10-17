@@ -69,7 +69,7 @@ export class RepositoryController {
       {
         org,
         repo,
-        url: 'http://api:3000/webhook',
+        url: 'http://api:3000/deployments',
       },
     );
 

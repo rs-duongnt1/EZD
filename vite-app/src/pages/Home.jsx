@@ -163,7 +163,7 @@ export default function Home() {
           {repos.map((repo) => (
             <RepoItem key={repo.id}>
               <RepoItemText onClick={() => selectRepo(repo)}>
-                {repo.name}
+                {repo.full_name}
               </RepoItemText>
               <div style={{ marginLeft: "10px" }}>
                 {repo?.private && <Badge appearance="default">private</Badge>}

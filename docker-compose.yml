@@ -1,85 +1,28 @@
 version: '3.8'
 
 volumes:
-  bare_repositories:
-    external: true
   builds:
     external: true
-  # nginx-sites-enabled:
-  #   external: true
 
 services:
   app:
     build:
       dockerfile: Dockerfile
-      context: react-app
+      context: vite-app
       target: development
     volumes:
-      - ./react-app:/var/src/react-app
-      - /var/src/react-app/node_modules
-    command: npm run start
+      - ./vite-app:/var/src/vite-app
+      - /var/src/vite-app/node_modules
+    command: npm run dev
     restart: always
     hostname: application
     env_file:
       - .env
     ports:
-      - 8000:8000
+      - 4000:3000
     networks:
       - backend
       - frontend
-  gateway:
-    build:
-      dockerfile: Dockerfile
-      context: gateway
-      target: development
-    volumes:
-      - ./gateway:/var/src/gateway
-      - /var/src/gateway/node_modules
-      - ./gateway/config/.gitconfig:/root/.gitconfig
-    command: npm run start:debug
-    restart: always
-    hostname: gateway
-    env_file:
-      - .env
-    ports:
-      - 8080:8080
-    networks:
-      - backend
-      - frontend
-  deployment:
-    build:
-      dockerfile: Dockerfile
-      context: deployment
-      target: development
-    volumes:
-      - ./deployment:/var/src/deployment
-      - /var/src/deployment/node_modules
-      - bare_repositories:/var/www/bare_repositories
-      - builds:/var/www/builds
-      - ./deployment/config/.gitconfig:/root/.gitconfig
-    command: npm run start:debug
-    restart: always
-    hostname: deployment
-    env_file:
-      - .env
-    networks:
-      - backend
-  db:
-    image: 'mongo:3.7'
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
-      MONGO_USER: ${MONGO_USER}
-      MONGO_PASSWORD: ${MONGO_PASSWORD}
-    volumes:
-      - "./db/data/db-files:/data/db"
-      - "./db/init/:/docker-entrypoint-initdb.d/"
-    ports:
-      - 27017:27017
-    networks:
-      - backend
   caddy:
     build:
       dockerfile: Dockerfile
@@ -117,7 +60,7 @@ services:
       - backend
       - frontend
   
-  building:
+  deployment:
     build:
       dockerfile: Dockerfile
       context: deployment

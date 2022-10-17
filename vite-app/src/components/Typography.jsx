@@ -1,26 +1,32 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
-const TypographyTitle = styled.h4({
-  fontSize: "24px",
-});
-
-const TypographyDefault = styled.p({
-  margin: 0,
-  fontSize: "14px",
-});
-
-const TypographyLink = styled.a((props) => ({
-  ...(props.color && {
-    color: props.color,
+const TypographyTitle = styled.h4(
+  ({ children, style, theme, ...rest }) => ({
+    fontSize: 24,
+    ...rest,
   }),
-}));
+);
+
+const TypographyDefault = styled.p(
+  ({ children, style, theme, ...rest }) => ({
+    fontSize: 14,
+    margin: 0,
+    ...rest,
+  }),
+);
+
+const TypographyLink = styled.a(
+  ({ children, style, theme, ...rest }) => ({
+    ...rest,
+  }),
+);
 
 export const Typography = ({ children, variant, ...rest }) => {
   switch (variant) {
-    case "title": {
+    case 'title': {
       return <TypographyTitle {...rest}>{children}</TypographyTitle>;
     }
-    case "link": {
+    case 'link': {
       return <TypographyLink {...rest}>{children}</TypographyLink>;
     }
     default:
